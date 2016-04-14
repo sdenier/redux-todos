@@ -1,0 +1,15 @@
+{
+  "name": "redux-todos",
+  "version": "0.0.1",
+  "description": "Tutorial with React/Redux",
+  "scripts": {
+    "start": "python -m SimpleHTTPServer",
+    "build": "babel --presets react src -w --out-dir public/scripts"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "babel-cli": "^6.7.5",
+    "babel-preset-react": "^6.5.0"
+  }
+}
