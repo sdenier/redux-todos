@@ -46,6 +46,17 @@ const todoApp = Redux.combineReducers({
 
 const store = Redux.createStore(todoApp);
 
+
+const render = () => {
+  ReactDOM.render(
+    <h1>Hello, world! {store.getState().todos.length}</h1>,
+    document.getElementById('app')
+  );
+}
+
+store.subscribe(render);
+
+
 store.dispatch({
   type: 'ADD_TODO',
   text: 'hello',
