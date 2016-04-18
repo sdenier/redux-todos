@@ -30,3 +30,54 @@ const todos = (state = [], action) => {
     default: return state;
   }
 }
+
+const visibilityFilter = (state = 'SHOW_ALL', action) => {
+  if (action.type === 'SET_VISIBILITY_FILTER') {
+    return action.filter;
+  } else {
+    return state;
+  }
+}
+
+const todoApp = (state = {}, action) => {
+  return {
+    todos: todos(state.todos, action),
+    visibilityFilter: visibilityFilter(state.visibilityFilter, action)
+  }
+}
+
+const store = Redux.createStore(todoApp);
+
+store.dispatch({
+  type: 'ADD_TODO',
+  text: 'hello',
+  id: 0
+});
+
+console.log('--- FIRST ACTION ---');
+console.log(store.getState());
+
+store.dispatch({
+  type: 'ADD_TODO',
+  text: 'world',
+  id: 1
+});
+
+console.log('--- SECOND ACTION ---');
+console.log(store.getState());
+
+store.dispatch({
+  type: 'TOGGLE_TODO',
+  id: 0
+});
+
+console.log('--- THIRD ACTION ---');
+console.log(store.getState());
+
+store.dispatch({
+  type: 'SET_VISIBILITY_FILTER',
+  filter: 'SHOW_NOT_COMPLETED'
+});
+
+console.log('--- FOURTH ACTION ---');
+console.log(store.getState());
