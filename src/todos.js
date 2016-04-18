@@ -47,46 +47,46 @@ const todoApp = Redux.combineReducers({
 const store = Redux.createStore(todoApp);
 
 
+let nextTodoId = 0
+
+class TodoApp extends React.Component {
+  render() {
+    return (
+      <div>
+        <input ref={node => {
+          this.input = node
+        }}/>
+        <button onClick={() => {
+          store.dispatch({
+            type: 'ADD_TODO',
+            text: this.input.value,
+            id: nextTodoId++
+          });
+          this.input.value = '';
+        }}>
+          Add Todo
+        </button>
+        <ul>
+          {this.props.todos.map(todo =>
+            <li key={ todo.id }>
+              { todo.text }
+            </li>
+          )}
+        </ul>
+      </div>
+    )
+  }
+}
+
 const render = () => {
   ReactDOM.render(
-    <h1>Hello, world! {store.getState().todos.length}</h1>,
+    <TodoApp
+      todos={ store.getState().todos }
+    />,
     document.getElementById('app')
   );
 }
 
 store.subscribe(render);
+render();
 
-
-store.dispatch({
-  type: 'ADD_TODO',
-  text: 'hello',
-  id: 0
-});
-
-console.log('--- FIRST ACTION ---');
-console.log(store.getState());
-
-store.dispatch({
-  type: 'ADD_TODO',
-  text: 'world',
-  id: 1
-});
-
-console.log('--- SECOND ACTION ---');
-console.log(store.getState());
-
-store.dispatch({
-  type: 'TOGGLE_TODO',
-  id: 0
-});
-
-console.log('--- THIRD ACTION ---');
-console.log(store.getState());
-
-store.dispatch({
-  type: 'SET_VISIBILITY_FILTER',
-  filter: 'SHOW_NOT_COMPLETED'
-});
-
-console.log('--- FOURTH ACTION ---');
-console.log(store.getState());
