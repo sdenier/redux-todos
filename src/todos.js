@@ -47,10 +47,47 @@ const todoApp = Redux.combineReducers({
 const store = Redux.createStore(todoApp);
 
 
+const FilterLink = ({ filter, currentFilter, children }) => {
+  if (filter === currentFilter) {
+    return (
+      <span>{ children }</span>
+    )
+  }
+  return (
+    <a href='#'
+      onClick={e => {
+        e.preventDefault()
+        store.dispatch({
+          type: 'SET_VISIBILITY_FILTER',
+          filter: filter
+        })
+      }}
+    >
+      { children }
+    </a>
+  )
+}
+
+const getVisibleTodos = (todos, filter) => {
+  switch (filter) {
+    case 'SHOW_ACTIVE':
+      return todos.filter(t => ! t.completed)
+    case 'SHOW_COMPLETED':
+      return todos.filter(t => t.completed)
+    default:
+      return todos
+  }
+}
+
 let nextTodoId = 0
 
 class TodoApp extends React.Component {
   render() {
+    let {
+      todos,
+      visibilityFilter
+    } = this.props
+    let visibleTodos = getVisibleTodos(todos, visibilityFilter)
     return (
       <div>
         <input ref={node => {
@@ -67,7 +104,7 @@ class TodoApp extends React.Component {
           Add Todo
         </button>
         <ul>
-          {this.props.todos.map(todo =>
+          {visibleTodos.map(todo =>
             <li key={ todo.id }
               onClick={() => {
                 store.dispatch({
@@ -82,6 +119,18 @@ class TodoApp extends React.Component {
             </li>
           )}
         </ul>
+        <p>
+          Show:&nbsp;
+          <FilterLink filter='SHOW_ALL' currentFilter={visibilityFilter}>
+            All
+          </FilterLink>&nbsp;
+          <FilterLink filter='SHOW_ACTIVE' currentFilter={visibilityFilter}>
+            Active
+          </FilterLink>&nbsp;
+          <FilterLink filter='SHOW_COMPLETED' currentFilter={visibilityFilter}>
+            Completed
+          </FilterLink>
+        </p>
       </div>
     )
   }
@@ -90,7 +139,7 @@ class TodoApp extends React.Component {
 const render = () => {
   ReactDOM.render(
     <TodoApp
-      todos={ store.getState().todos }
+      { ...store.getState() }
     />,
     document.getElementById('app')
   );
