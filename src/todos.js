@@ -90,6 +90,23 @@ const TodoList = ({todos, onTodoClick}) => (
   </ul>
 )
 
+const AddTodo = ({onAddClick}) => {
+  let input
+  return (
+    <div>
+      <input ref={node => {
+        input = node
+      }}/>
+      <button onClick={() => {
+        onAddClick(input.value)
+        input.value = ''
+      }}>
+        Add Todo
+      </button>
+    </div>
+  )
+}
+
 const getVisibleTodos = (todos, filter) => {
   switch (filter) {
     case 'SHOW_ACTIVE':
@@ -112,19 +129,13 @@ class TodoApp extends React.Component {
     let visibleTodos = getVisibleTodos(todos, visibilityFilter)
     return (
       <div>
-        <input ref={node => {
-          this.input = node
-        }}/>
-        <button onClick={() => {
+        <AddTodo onAddClick={text => {
           store.dispatch({
             type: 'ADD_TODO',
-            text: this.input.value,
+            text,
             id: nextTodoId++
           });
-          this.input.value = '';
-        }}>
-          Add Todo
-        </button>
+        }} />
         <TodoList
           todos={visibleTodos}
           onTodoClick={id => {
