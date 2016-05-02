@@ -47,7 +47,7 @@ const todoApp = Redux.combineReducers({
 const store = Redux.createStore(todoApp);
 
 
-const FilterLink = ({ filter, currentFilter, children }) => {
+const FilterLink = ({ filter, currentFilter, children, onClick }) => {
   if (filter === currentFilter) {
     return (
       <span>{ children }</span>
@@ -57,14 +57,28 @@ const FilterLink = ({ filter, currentFilter, children }) => {
     <a href='#'
       onClick={e => {
         e.preventDefault()
-        store.dispatch({
-          type: 'SET_VISIBILITY_FILTER',
-          filter: filter
-        })
+        onClick(filter)
       }}
     >
       { children }
     </a>
+  )
+}
+
+const Footer = ({visibilityFilter, onFilterClick}) => {
+  return (
+    <p>
+      Show:&nbsp;
+      <FilterLink filter='SHOW_ALL' currentFilter={visibilityFilter} onClick={onFilterClick}>
+        All
+      </FilterLink>&nbsp;
+      <FilterLink filter='SHOW_ACTIVE' currentFilter={visibilityFilter} onClick={onFilterClick}>
+        Active
+      </FilterLink>&nbsp;
+      <FilterLink filter='SHOW_COMPLETED' currentFilter={visibilityFilter} onClick={onFilterClick}>
+        Completed
+      </FilterLink>
+    </p>
   )
 }
 
@@ -145,18 +159,15 @@ class TodoApp extends React.Component {
             });
           }}
         />
-        <p>
-          Show:&nbsp;
-          <FilterLink filter='SHOW_ALL' currentFilter={visibilityFilter}>
-            All
-          </FilterLink>&nbsp;
-          <FilterLink filter='SHOW_ACTIVE' currentFilter={visibilityFilter}>
-            Active
-          </FilterLink>&nbsp;
-          <FilterLink filter='SHOW_COMPLETED' currentFilter={visibilityFilter}>
-            Completed
-          </FilterLink>
-        </p>
+        <Footer
+          visibilityFilter={visibilityFilter}
+          onFilterClick={filter =>
+            store.dispatch({
+              type: 'SET_VISIBILITY_FILTER',
+              filter: filter
+            })
+          }
+        />
       </div>
     )
   }
