@@ -137,7 +137,7 @@ const TodoList = ({todos, onTodoClick}) => (
 
 let nextTodoId = 0
 
-const AddTodo = (props, { store }) => {
+let AddTodo = ({ dispatch }) => {
   let input
   return (
     <div>
@@ -145,7 +145,7 @@ const AddTodo = (props, { store }) => {
         input = node
       }}/>
       <button onClick={() => {
-        store.dispatch({
+        dispatch({
           type: 'ADD_TODO',
           text: input.value,
           id: nextTodoId++
@@ -157,9 +157,8 @@ const AddTodo = (props, { store }) => {
     </div>
   )
 }
-AddTodo.contextTypes = {
-  store: React.PropTypes.object
-}
+AddTodo = ReactRedux.connect()(AddTodo)
+
 
 const getVisibleTodos = (todos, filter) => {
   switch (filter) {
